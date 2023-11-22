@@ -26,10 +26,7 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, product, onSubmit }
   });
 
   React.useLayoutEffect(() => {
-    if (isSubmitSuccessful) {
-      console.log('reset'); // TODO
-      reset();
-    }
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset]);
 
   return (

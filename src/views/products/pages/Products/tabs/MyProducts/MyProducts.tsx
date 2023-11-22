@@ -15,7 +15,7 @@ const MyProducts: React.FC = () => {
 
       {products?.length === 0 && <Alert color="gray" title="No Products" />}
 
-      {products?.length && <MyProductsTable items={products} />}
+      {Boolean(products?.length) && <MyProductsTable items={products!} />}
     </>
   );
 };

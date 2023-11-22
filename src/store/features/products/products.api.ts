@@ -14,24 +14,24 @@ export const productsApi = createApi({
     prepareHeaders: prepareAuthHeaders,
   }),
 
-  // tagTypes: ['Products'],
+  tagTypes: ['Products', 'UserProducts'],
 
   endpoints: build => ({
     getProducts: build.query<Product[], number | void>({
       query: (limit = 8) => ({ url: '', params: { limit } }),
-      // providesTags: result =>
-      //   result
-      //     ? [...result.map(({ id }) => ({ type: 'Products' as const, id })), { type: 'Products', id: 'LIST' }]
-      //     : [{ type: 'Products', id: 'LIST' }],
+      providesTags: result =>
+        result
+          ? [...result.map(({ id }) => ({ type: 'Products' as const, id })), { type: 'Products', id: 'LIST' }]
+          : [{ type: 'Products', id: 'LIST' }],
     }),
 
     getProduct: build.query<Product, string>({
       query: id => id,
+      providesTags: (result, error, id) => [{ type: 'Products', id }],
     }),
 
     createProduct: build.mutation<UserProduct, CreateProductParams>({
       query: body => ({ url: '', method: 'POST', body }),
-      // invalidatesTags: ['Comment'],
       transformResponse(response: CreateProductResponseData, meta, arg) {
         return {
           ...arg,
@@ -47,16 +47,19 @@ export const productsApi = createApi({
           localStorage.setItem('products', JSON.stringify([data, ...products]));
         });
       },
+      invalidatesTags: () => [{ type: 'UserProducts', id: 'LIST' }],
     }),
 
     deleteProduct: build.mutation<void, string | number>({
-      // query: id => ({ url: String(id), method: 'DELETE' }), // product does not exist
+      // product does not exist
+      // query: id => ({ url: String(id), method: 'DELETE' }),
       queryFn: async id => {
         await sleep();
         const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
         localStorage.setItem('products', JSON.stringify(products.filter(p => p.id !== id)));
         return { data: undefined };
       },
+      invalidatesTags: () => [{ type: 'UserProducts', id: 'LIST' }],
     }),
 
     updateProduct: build.mutation<void, UserProduct>({
@@ -68,6 +71,24 @@ export const productsApi = createApi({
         localStorage.setItem('products', JSON.stringify(products));
         return { data: undefined };
       },
+      invalidatesTags: (result, error, params) => [
+        { type: 'UserProducts', id: params.id },
+        { type: 'UserProducts', id: 'LIST' },
+      ],
+    }),
+
+    getUserProducts: build.query<UserProduct[], void>({
+      queryFn: async () => {
+        await sleep();
+        const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]'); // TODO
+        return { data: products };
+      },
+      providesTags: result => {
+        const UserProductsList = { type: 'UserProducts', id: 'LIST' } as const;
+        return result
+          ? [...result.map(({ id }) => ({ type: 'UserProducts' as const, id })), UserProductsList]
+          : [UserProductsList];
+      },
     }),
 
     getUserProduct: build.query<UserProduct, string | number>({
@@ -77,14 +98,7 @@ export const productsApi = createApi({
         const product = products.find(p => p.id === id);
         return product ? { data: product } : { error: { status: 'FETCH_ERROR', error: 'Product not found' } };
       },
-    }),
-
-    getUserProducts: build.query<UserProduct[], void>({
-      queryFn: async () => {
-        await sleep();
-        const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
-        return { data: products };
-      },
+      providesTags: (result, error, id) => [{ type: 'UserProducts', id }],
     }),
   }),
 });
@@ -95,6 +109,6 @@ export const {
   useCreateProductMutation,
   useDeleteProductMutation,
   useUpdateProductMutation,
-  useGetUserProductQuery,
   useGetUserProductsQuery,
+  useGetUserProductQuery,
 } = productsApi;

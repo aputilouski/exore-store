@@ -1,7 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { authReducer, authApi, authListenerMiddleware, authGuardMiddleware } from './features/auth';
+import { authGuardMiddleware } from './middlewares';
+import { authReducer, authApi, authListenerMiddleware } from './features/auth';
 import { productsApi } from './features/products';
 
 export const store = configureStore({

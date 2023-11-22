@@ -31,7 +31,7 @@ const StoreProducts = () => {
         ))}
       </div>
 
-      {isFetching && <Loader className="!block mx-auto my-12" />}
+      {products && isFetching && <Loader className="!block mx-auto my-12" />}
 
       <LimitButtons setLimit={setLimit} />
     </>
