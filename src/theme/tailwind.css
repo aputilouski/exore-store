@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .content-center {
+    @apply h-full w-full flex justify-center items-center;
+  }
+}
