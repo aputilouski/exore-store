@@ -6,7 +6,7 @@ import router from '@router';
 import ProductCard from './components/ProductCard';
 import { LimitButtons, ProductsLoadingPreview } from './StoreProducts.elements';
 
-const StoreProducts = () => {
+const StoreProducts: React.FC = () => {
   const [limit, setLimit] = React.useState(8);
 
   const { data: products, isLoading, isFetching, isError, error } = useGetProductsQuery(limit);

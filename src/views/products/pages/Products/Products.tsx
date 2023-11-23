@@ -7,11 +7,11 @@ const STORE_PRODUCTS_TAB = 'store-products';
 const MY_PRODUCTS_TAB = 'my-products';
 
 const Products: React.FC = () => {
+  // saving tabs between page switches
   const [value, setValue] = React.useState<string | null>(() => localStorage.getItem('products-page-tab'));
-
-  // TODO: move to store
   React.useEffect(() => {
     if (value) localStorage.setItem('products-page-tab', value);
+    else setValue(STORE_PRODUCTS_TAB);
   }, [value]);
 
   return (

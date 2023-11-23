@@ -1,20 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { authGuardMiddleware } from './middlewares';
-import { authReducer, authApi, authListenerMiddleware } from './features/auth';
-import { productsApi } from './features/products';
+import { authGuardMiddleware, authListenerMiddleware } from './middlewares';
+import { authReducer } from './features/auth';
+import { api } from './api';
 
 export const store = configureStore({
   reducer: {
-    [authApi.reducerPath]: authApi.reducer,
+    [api.reducerPath]: api.reducer,
     auth: authReducer,
-    [productsApi.reducerPath]: productsApi.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware() //
       .prepend([authListenerMiddleware.middleware, authGuardMiddleware])
-      .concat([authApi.middleware, productsApi.middleware]),
+      .concat([api.middleware]),
 });
 
 setupListeners(store.dispatch);

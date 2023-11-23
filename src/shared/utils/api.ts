@@ -19,7 +19,7 @@ export const getApiErrorMessage = (error: unknown): string => {
   let message;
   if (isFetchBaseQueryError(error)) {
     if ('error' in error) message = error.error;
-    else if (error.data) JSON.stringify(error.data);
+    else if (error.data) message = typeof error.data === 'string' ? error.data : JSON.stringify(error.data);
   } else if (isErrorWithMessage(error)) message = error.message;
   if (!message) message = 'Oops. Something went wrong...';
   return message;

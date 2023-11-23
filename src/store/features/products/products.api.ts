@@ -1,24 +1,14 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { nanoid } from '@reduxjs/toolkit';
+import { api } from '../../api';
 import { Product, UserProduct } from '../../models';
-import { prepareAuthHeaders } from '../../utils';
 import { CreateProductParams, CreateProductResponseData } from './products.types';
 
 const sleep = (ms: number = 800) => new Promise(resolve => setTimeout(resolve, ms));
 
-export const productsApi = createApi({
-  reducerPath: 'api/products',
-
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'https://fakestoreapi.com/products',
-    prepareHeaders: prepareAuthHeaders,
-  }),
-
-  tagTypes: ['Products', 'UserProducts'],
-
+export const productsApi = api.injectEndpoints({
   endpoints: build => ({
     getProducts: build.query<Product[], number | void>({
-      query: (limit = 8) => ({ url: '', params: { limit } }),
+      query: (limit = 8) => ({ url: 'products', params: { limit } }),
       providesTags: result =>
         result
           ? [...result.map(({ id }) => ({ type: 'Products' as const, id })), { type: 'Products', id: 'LIST' }]
@@ -26,13 +16,13 @@ export const productsApi = createApi({
     }),
 
     getProduct: build.query<Product, string>({
-      query: id => id,
-      providesTags: (result, error, id) => [{ type: 'Products', id }],
+      query: id => 'products/' + id,
+      providesTags: (_result, _error, id) => [{ type: 'Products', id }],
     }),
 
     createProduct: build.mutation<UserProduct, CreateProductParams>({
-      query: body => ({ url: '', method: 'POST', body }),
-      transformResponse(response: CreateProductResponseData, meta, arg) {
+      query: body => ({ url: 'products', method: 'POST', body }),
+      transformResponse(response: CreateProductResponseData, _meta, arg) {
         return {
           ...arg,
           ...response,
@@ -51,8 +41,7 @@ export const productsApi = createApi({
     }),
 
     deleteProduct: build.mutation<void, string | number>({
-      // product does not exist
-      // query: id => ({ url: String(id), method: 'DELETE' }),
+      // query: id => ({ url: String(id), method: 'DELETE' }), // my product doesn't exist
       queryFn: async id => {
         await sleep();
         const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
@@ -71,7 +60,7 @@ export const productsApi = createApi({
         localStorage.setItem('products', JSON.stringify(products));
         return { data: undefined };
       },
-      invalidatesTags: (result, error, params) => [
+      invalidatesTags: (_result, _error, params) => [
         { type: 'UserProducts', id: params.id },
         { type: 'UserProducts', id: 'LIST' },
       ],
@@ -98,7 +87,7 @@ export const productsApi = createApi({
         const product = products.find(p => p.id === id);
         return product ? { data: product } : { error: { status: 'FETCH_ERROR', error: 'Product not found' } };
       },
-      providesTags: (result, error, id) => [{ type: 'UserProducts', id }],
+      providesTags: (_result, _error, id) => [{ type: 'UserProducts', id }],
     }),
   }),
 });

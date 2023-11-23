@@ -4,17 +4,22 @@ import router from '@router';
 import NavLink from '../NavLink';
 
 const Header: React.FC = () => {
-  const { data, isLoading } = useGetUserQuery();
+  const { data: user, isLoading } = useGetUserQuery();
 
   const dispatch = useAppDispatch();
+
+  const handleSignOut = () => {
+    dispatch(authActions.signOut());
+    router.replace(router.path.signIn);
+  };
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex-1">
-        {!isLoading && data && (
+        {!isLoading && user && (
           <div className="flex items-center gap-1">
-            <div className="text-lg font-bold">{`${data.name.firstname} ${data.name.lastname}`}</div>
-            <div className="text-sm">({data.email})</div>
+            <div className="text-lg font-bold">{`${user.name.firstname} ${user.name.lastname}`}</div>
+            <div className="text-sm">({user.email})</div>
           </div>
         )}
         {isLoading && <Loader size="sm" />}
@@ -26,7 +31,7 @@ const Header: React.FC = () => {
       </div>
 
       <div className="flex-1 text-right">
-        <Button color="red" onClick={() => dispatch(authActions.signOut())}>
+        <Button color="red" onClick={handleSignOut}>
           Exit
         </Button>
       </div>

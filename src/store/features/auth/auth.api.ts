@@ -1,25 +1,19 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { api } from '../../api';
 import { User } from '../../models';
-import { prepareAuthHeaders } from '../../utils';
-import { authActions } from './auth.slice';
+import { saveAccessToken } from '../../utils';
 
-export const authApi = createApi({
-  reducerPath: 'api/auth',
-
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'https://fakestoreapi.com',
-    prepareHeaders: prepareAuthHeaders,
-  }),
-
-  tagTypes: ['User'],
-
+export const authApi = api.injectEndpoints({
   endpoints: build => ({
     signIn: build.mutation<{ token: string }, { username: string; password: string }>({
-      query: body => ({ url: 'auth/login', method: 'POST', body }),
-      onQueryStarted(_, { dispatch, queryFulfilled }) {
+      query: body => ({
+        url: 'auth/login',
+        method: 'POST',
+        body,
+        responseHandler: 'text',
+      }),
+      onQueryStarted(_, { queryFulfilled }) {
         queryFulfilled.then(({ data }) => {
-          dispatch(authActions.signIn(data.token));
-          dispatch(authApi.endpoints.getUser.initiate());
+          saveAccessToken(data.token);
         });
       },
     }),
@@ -27,11 +21,6 @@ export const authApi = createApi({
     getUser: build.query<User, void>({
       query: () => 'users/2',
       providesTags: ['User'],
-      onQueryStarted(_, { dispatch, queryFulfilled }) {
-        queryFulfilled.then(({ data }) => {
-          dispatch(authActions.setUser(data));
-        });
-      },
     }),
   }),
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Loader } from '@mantine/core';
+import { Loader, LoadingOverlay } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { ProductEditor, ProductEditorParams } from '@views/products/components';
 import { ErrorAlert } from '@shared/components';
@@ -24,11 +24,14 @@ const CreateProduct: React.FC = () => {
       {isLoading && <Loader className="!block mx-auto" />}
 
       {product && (
-        <ProductEditor //
-          mode="edit"
-          product={product}
-          onSubmit={onSubmit}
-        />
+        <div className="relative">
+          <LoadingOverlay visible={isFetching} />
+          <ProductEditor //
+            mode="edit"
+            product={product}
+            onSubmit={onSubmit}
+          />
+        </div>
       )}
     </>
   );

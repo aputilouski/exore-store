@@ -1,4 +1,4 @@
-import { Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
 
 import { SignInPage } from '@views/auth';
 import { ProductsPage, CreateProductPage, ProductPage, EditProductPage } from '@views/products';
@@ -47,6 +47,7 @@ const RootRouter: React.FC = () => (
               {privateRoutes.map(props => (
                 <Route key={props.path as string} {...props} />
               ))}
+              <Redirect to={router.path.products} />
             </Switch>
           </MainLayout>
         </AuthGuard>
