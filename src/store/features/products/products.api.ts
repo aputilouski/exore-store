@@ -2,8 +2,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { api } from '../../api';
 import { Product, UserProduct } from '../../models';
 import { CreateProductParams, CreateProductResponseData } from './products.types';
-
-const sleep = (ms: number = 800) => new Promise(resolve => setTimeout(resolve, ms));
+import { userProductService } from './products.helpers';
 
 export const productsApi = api.injectEndpoints({
   endpoints: build => ({
@@ -31,21 +30,18 @@ export const productsApi = api.injectEndpoints({
           image: 'https://i.pravatar.cc',
         };
       },
-      onQueryStarted(arg, { queryFulfilled }) {
+      onQueryStarted(_arg, { queryFulfilled }) {
         queryFulfilled.then(({ data }) => {
-          const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
-          localStorage.setItem('products', JSON.stringify([data, ...products]));
+          userProductService.addProduct(data);
         });
       },
       invalidatesTags: () => [{ type: 'UserProducts', id: 'LIST' }],
     }),
 
     deleteProduct: build.mutation<void, string | number>({
-      // query: id => ({ url: String(id), method: 'DELETE' }), // my product doesn't exist
+      // query: id => ({ url: String(id), method: 'DELETE' }), // error: user's product doesn't exist
       queryFn: async id => {
-        await sleep();
-        const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
-        localStorage.setItem('products', JSON.stringify(products.filter(p => p.id !== id)));
+        await userProductService.deleteProduct(id);
         return { data: undefined };
       },
       invalidatesTags: () => [{ type: 'UserProducts', id: 'LIST' }],
@@ -53,11 +49,7 @@ export const productsApi = api.injectEndpoints({
 
     updateProduct: build.mutation<void, UserProduct>({
       queryFn: async values => {
-        await sleep();
-        const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
-        const index = products.findIndex(p => p.id === values.id);
-        products[index] = values;
-        localStorage.setItem('products', JSON.stringify(products));
+        await userProductService.updateProduct(values);
         return { data: undefined };
       },
       invalidatesTags: (_result, _error, params) => [
@@ -68,8 +60,7 @@ export const productsApi = api.injectEndpoints({
 
     getUserProducts: build.query<UserProduct[], void>({
       queryFn: async () => {
-        await sleep();
-        const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]'); // TODO
+        const products = await userProductService.getProducts();
         return { data: products };
       },
       providesTags: result => {
@@ -82,9 +73,7 @@ export const productsApi = api.injectEndpoints({
 
     getUserProduct: build.query<UserProduct, string | number>({
       queryFn: async id => {
-        await sleep();
-        const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
-        const product = products.find(p => p.id === id);
+        const product = await userProductService.findProduct(id);
         return product ? { data: product } : { error: { status: 'FETCH_ERROR', error: 'Product not found' } };
       },
       providesTags: (_result, _error, id) => [{ type: 'UserProducts', id }],

@@ -9,7 +9,7 @@ const Header: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const handleSignOut = () => {
-    dispatch(authActions.signOut());
+    dispatch(authActions.loggedOut());
     router.replace(router.path.signIn);
   };
 

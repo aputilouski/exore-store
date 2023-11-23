@@ -5,7 +5,7 @@ import { destroyAccessToken } from '../utils';
 export const authListenerMiddleware = createListenerMiddleware();
 
 authListenerMiddleware.startListening({
-  actionCreator: authActions.signOut,
+  actionCreator: authActions.loggedOut,
   effect: (_, listenerApi) => {
     destroyAccessToken();
     listenerApi.dispatch(authApi.util.resetApiState());

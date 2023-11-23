@@ -19,7 +19,7 @@ const SignIn: React.FC = () => {
   const handleSignIn: SubmitHandler<SignInParams> = async data => {
     const result = await signIn(data);
     if ('data' in result) {
-      dispatch(authActions.signIn());
+      dispatch(authActions.loggedIn());
       router.replace(router.path.products);
     }
   };

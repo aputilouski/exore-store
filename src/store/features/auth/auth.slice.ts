@@ -13,12 +13,11 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // TODO: naming
-    signIn(state) {
+    loggedIn(state) {
       state.authorized = true;
     },
 
-    signOut(state) {
+    loggedOut(state) {
       state.authorized = false;
     },
   },
