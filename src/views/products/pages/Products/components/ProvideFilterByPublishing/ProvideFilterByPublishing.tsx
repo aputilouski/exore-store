@@ -18,7 +18,7 @@ const ProvideFilterByPublishing: React.FC<React.PropsWithChildren> = ({ children
     <FilterContext.Provider value={value}>
       <div className="my-6 px-2">
         <Checkbox //
-          label="Publishing filter"
+          label="Published?"
           checked={checked}
           indeterminate={indeterminate}
           onChange={handleChange}

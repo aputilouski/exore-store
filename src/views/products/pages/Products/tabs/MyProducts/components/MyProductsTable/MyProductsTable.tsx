@@ -14,6 +14,7 @@ const MyProductsTable = React.memo<MyProductsTableProps>(({ items }) => (
         <Table.Th>Name</Table.Th>
         <Table.Th>Price</Table.Th>
         <Table.Th>Published</Table.Th>
+        <Table.Th>Created At</Table.Th>
         <Table.Th w={120} />
       </Table.Tr>
     </Table.Thead>

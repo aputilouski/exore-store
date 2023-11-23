@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Loader, LoadingOverlay } from '@mantine/core';
+import { Alert, Loader, LoadingOverlay } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { ProductEditor, ProductEditorParams } from '@views/products/components';
 import { useGetUserProductQuery, useUpdateProductMutation } from '@store';
@@ -31,6 +31,8 @@ const CreateProduct: React.FC = () => {
   return (
     <>
       {isLoading && <Loader className="!block mx-auto" />}
+
+      {!product && <Alert color="gray" title="Product Not Found" />}
 
       {product && (
         <div className="relative">

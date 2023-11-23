@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { ActionIcon, Table } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import router from '@router';
@@ -18,6 +19,7 @@ const MyProductsTableRow: React.FC<MyProductsTableRowProps> = ({ item }) => {
       <Table.Td>{item.title}</Table.Td>
       <Table.Td>${item.price}</Table.Td>
       <Table.Td>{item.published ? 'Yes' : 'No'}</Table.Td>
+      <Table.Td>{dayjs(item.createdAt).format('DD MMM YYYY HH:mm')}</Table.Td>
       <Table.Td className="flex gap-2 justify-end">
         <ActionIcon //
           variant="subtle"
