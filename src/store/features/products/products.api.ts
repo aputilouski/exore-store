@@ -1,10 +1,17 @@
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { nanoid } from '@reduxjs/toolkit';
 import { Product, UserProduct } from '@store/models';
-import { api } from '../../api';
 import { CreateProductParams, CreateProductResponseData } from './products.types';
 import { userProductService } from './products.helpers';
+import { baseQuery } from '@store/utils';
 
-export const productsApi = api.injectEndpoints({
+export const productsApi = createApi({
+  reducerPath: 'api/products',
+
+  baseQuery,
+
+  tagTypes: ['Products', 'UserProducts'],
+
   endpoints: build => ({
     getProducts: build.query<Product[], number | void>({
       query: (limit = 8) => ({ url: 'products', params: { limit } }),
@@ -83,7 +90,7 @@ export const productsApi = api.injectEndpoints({
 });
 
 export const {
-  useGetProductsQuery, //
+  useGetProductsQuery,
   useGetProductQuery,
   useCreateProductMutation,
   useDeleteProductMutation,

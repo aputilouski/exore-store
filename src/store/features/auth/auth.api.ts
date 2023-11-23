@@ -1,8 +1,14 @@
-import { api } from '../../api';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { User } from '@store/models';
-import { saveAccessToken } from '@store/utils';
+import { baseQuery, saveAccessToken } from '@store/utils';
 
-export const authApi = api.injectEndpoints({
+export const authApi = createApi({
+  reducerPath: 'api/auth',
+
+  baseQuery,
+
+  tagTypes: ['User'],
+
   endpoints: build => ({
     signIn: build.mutation<{ token: string }, { username: string; password: string }>({
       query: body => ({
