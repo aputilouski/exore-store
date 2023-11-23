@@ -26,6 +26,7 @@
       "@router": ["src/router"],
       "@shared/*": ["src/shared/*"],
       "@store": ["src/store"],
+      "@store/*": ["src/store/*"],
       "@theme": ["src/theme"],
       "@utils": ["src/utils"],
       "@views/*": ["src/views/*"]

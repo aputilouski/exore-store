@@ -28,7 +28,7 @@ const MyProductsTableRow: React.FC<MyProductsTableRowProps> = ({ item }) => {
           variant="subtle"
           size="md"
           color="red"
-          onClick={handleDelete}
+          onClick={() => handleDelete()}
           loading={isLoading}
           children={<IconTrash />}
         />

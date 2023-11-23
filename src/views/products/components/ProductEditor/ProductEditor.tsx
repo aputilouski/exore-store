@@ -6,11 +6,12 @@ import { resolver, defaultValues, ProductEditorParams, isEditMode } from './Prod
 
 type ProductEditorProps = {
   mode: 'edit' | 'create';
-  product?: UserProduct;
+  defaultValues?: UserProduct;
   onSubmit: SubmitHandler<ProductEditorParams>;
 };
 
-const ProductEditor: React.FC<ProductEditorProps> = ({ mode, product, onSubmit }) => {
+const ProductEditor: React.FC<ProductEditorProps> = props => {
+  const { mode, defaultValues: productDefaultValues, onSubmit } = props;
   const editMode = isEditMode(mode);
 
   const {
@@ -22,12 +23,12 @@ const ProductEditor: React.FC<ProductEditorProps> = ({ mode, product, onSubmit }
   } = useForm<ProductEditorParams>({
     resolver,
     mode: 'onTouched',
-    defaultValues: editMode ? product : defaultValues,
+    defaultValues: editMode ? productDefaultValues : defaultValues,
   });
 
   React.useLayoutEffect(() => {
-    if (isSubmitSuccessful) reset();
-  }, [isSubmitSuccessful, reset]);
+    if (!editMode && isSubmitSuccessful) reset();
+  }, [editMode, isSubmitSuccessful, reset]);
 
   return (
     <div className="max-w-2xl mx-auto">
