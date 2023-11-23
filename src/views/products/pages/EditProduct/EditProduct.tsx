@@ -32,7 +32,7 @@ const CreateProduct: React.FC = () => {
     <>
       {isLoading && <Loader className="!block mx-auto" />}
 
-      {!product && <Alert color="gray" title="Product Not Found" />}
+      {!isLoading && !product && <Alert color="gray" title="Product Not Found" />}
 
       {product && (
         <div className="relative">
