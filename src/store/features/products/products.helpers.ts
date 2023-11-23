@@ -1,11 +1,19 @@
-import { UserProduct } from '../../models';
+import { UserProduct } from '@store/models';
 
 const sleep = (ms: number = 600) => new Promise(resolve => setTimeout(resolve, ms));
 
+type GetProductsParams = { published?: boolean };
+
 export const userProductService = {
-  async getProducts(): Promise<UserProduct[]> {
+  async getProducts({ published }: GetProductsParams = {}): Promise<UserProduct[]> {
     await sleep();
-    return JSON.parse(localStorage.getItem('products') || '[]');
+    const products: UserProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
+
+    // sort by published
+    if (typeof published === 'boolean')
+      return products.sort((a, b) => (published ? 1 : -1) * (a.published && !b.published ? -1 : 1));
+
+    return products;
   },
 
   async findProduct(productId: string | number): Promise<UserProduct | undefined> {

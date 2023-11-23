@@ -1,6 +1,6 @@
 import { api } from '../../api';
-import { User } from '../../models';
-import { saveAccessToken } from '../../utils';
+import { User } from '@store/models';
+import { saveAccessToken } from '@store/utils';
 
 export const authApi = api.injectEndpoints({
   endpoints: build => ({

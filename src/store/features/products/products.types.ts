@@ -1,4 +1,4 @@
-import { Product } from '../../models';
+import { Product } from '@store/models';
 
 export type CreateProductParams = Pick<Product, 'title' | 'price' | 'description'> & {
   published: boolean;

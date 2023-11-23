@@ -9,4 +9,5 @@ export interface Product {
 
 export interface UserProduct extends Product {
   published: boolean;
+  createdAt: string;
 }

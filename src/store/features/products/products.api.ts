@@ -1,6 +1,6 @@
 import { nanoid } from '@reduxjs/toolkit';
+import { Product, UserProduct } from '@store/models';
 import { api } from '../../api';
-import { Product, UserProduct } from '../../models';
 import { CreateProductParams, CreateProductResponseData } from './products.types';
 import { userProductService } from './products.helpers';
 
@@ -28,6 +28,7 @@ export const productsApi = api.injectEndpoints({
           id: nanoid(),
           category: 'other',
           image: 'https://i.pravatar.cc',
+          createdAt: new Date().toISOString(),
         };
       },
       onQueryStarted(_arg, { queryFulfilled }) {
@@ -58,9 +59,9 @@ export const productsApi = api.injectEndpoints({
       ],
     }),
 
-    getUserProducts: build.query<UserProduct[], void>({
-      queryFn: async () => {
-        const products = await userProductService.getProducts();
+    getUserProducts: build.query<UserProduct[], boolean | undefined | void>({
+      queryFn: async filterByPublishing => {
+        const products = await userProductService.getProducts({ published: filterByPublishing ?? undefined });
         return { data: products };
       },
       providesTags: result => {

@@ -17,6 +17,7 @@ const MyProductsTableRow: React.FC<MyProductsTableRowProps> = ({ item }) => {
     <Table.Tr>
       <Table.Td>{item.title}</Table.Td>
       <Table.Td>${item.price}</Table.Td>
+      <Table.Td>{item.published ? 'Yes' : 'No'}</Table.Td>
       <Table.Td className="flex gap-2 justify-end">
         <ActionIcon //
           variant="subtle"

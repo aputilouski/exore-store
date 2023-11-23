@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { findAccessToken } from '../../utils';
+import { findAccessToken } from '@store/utils';
 
 type InitialState = {
   authorized: boolean;

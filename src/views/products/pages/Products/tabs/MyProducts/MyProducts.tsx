@@ -1,11 +1,15 @@
+import React from 'react';
 import { Alert, LoadingOverlay } from '@mantine/core';
 import { ErrorAlert } from '@shared/components';
 import { useGetUserProductsQuery } from '@store';
+import { usePublishingFilterValue } from '../../components/ProvideFilterByPublishing';
 import MyProductsTable from './components/MyProductsTable';
 import { MyProductsLoadingPreview } from './MyProducts.elements';
 
 const MyProducts: React.FC = () => {
-  const { data: products, isLoading, isFetching, isError, error } = useGetUserProductsQuery();
+  const filterValue = usePublishingFilterValue();
+
+  const { data: products, isLoading, isFetching, isError, error } = useGetUserProductsQuery(filterValue);
 
   return (
     <>
